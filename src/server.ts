@@ -3,7 +3,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import { prisma } from './lib/prisma.js';
+// import { prisma } from './lib/prisma.js'; // Disabled for now - enable when you add PostgreSQL
 import { setupGameHandlers } from './controllers/gameController.js';
 
 const app = express();
@@ -51,7 +51,7 @@ httpServer.listen(PORT, () => {
 // Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\nShutting down gracefully...');
-  await prisma.$disconnect();
+  // await prisma.$disconnect(); // Disabled for now - enable when you add PostgreSQL
   httpServer.close(() => {
     console.log('Server closed');
     process.exit(0);

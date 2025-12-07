@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Snake Battle</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <!-- Home Screen -->
+  <section id="home-screen" class="screen active">
+    <div class="container">
+      <h1>3D Snake Battle</h1>
+      <input type="text" id="username-input" placeholder="Enter username" maxlength="20" autofocus>
+      <button id="find-match-btn" class="btn-primary">Find Match</button>
+
+      <div id="stats-display" class="stats-card hidden">
+        <h3>Your Stats</h3>
+        <p>Wins: <span id="stat-wins">0</span></p>
+        <p>Losses: <span id="stat-losses">0</span></p>
+        <p>Win Streak: <span id="stat-winstreak">0</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Searching Screen -->
+  <section id="searching-screen" class="screen">
+    <div class="container">
+      <div class="spinner"></div>
+      <h2>Looking for opponent...</h2>
+      <button id="cancel-btn" class="btn-secondary">Cancel</button>
+    </div>
+  </section>
+
+  <!-- Countdown Screen -->
+  <section id="countdown-screen" class="screen">
+    <div class="container">
+      <h2>Match Found!</h2>
+      <div class="players-display">
+        <div class="player-card">
+          <span id="player1-name">Player 1</span>
+          <div class="color-indicator player1-color"></div>
+        </div>
+        <span class="vs">VS</span>
+        <div class="player-card">
+          <span id="player2-name">Player 2</span>
+          <div class="color-indicator player2-color"></div>
+        </div>
+      </div>
+      <div id="countdown-number" class="countdown">3</div>
+    </div>
+  </section>
+
+  <!-- Game Screen -->
+  <section id="game-screen" class="screen">
+    <canvas id="game-canvas"></canvas>
+    <div class="game-hud">
+      <div class="player-info left">
+        <div class="color-bar player1-color"></div>
+        <span id="game-player1-name">You</span>
+      </div>
+      <div class="player-info right">
+        <span id="game-player2-name">Opponent</span>
+        <div class="color-bar player2-color"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Game Over Screen -->
+  <section id="gameover-screen" class="screen">
+    <div class="container">
+      <h1 id="result-message">You Win!</h1>
+      <div id="updated-stats" class="stats-card">
+        <h3>Updated Stats</h3>
+        <p>Wins: <span id="final-wins">0</span></p>
+        <p>Losses: <span id="final-losses">0</span></p>
+        <p>Win Streak: <span id="final-winstreak">0</span></p>
+      </div>
+      <button id="play-again-btn" class="btn-primary">Play Again</button>
+    </div>
+  </section>
+
+  <!-- Socket.io -->
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+
+  <!-- Three.js via import map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+      }
+    }
+  </script>
+
+  <!-- Main app -->
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
