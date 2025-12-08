@@ -42,6 +42,7 @@ function switchAuthMode(mode) {
   const guestForm = document.getElementById('guest-form');
   const authSubmitBtn = document.getElementById('auth-submit-btn');
   const authError = document.getElementById('auth-error');
+  const statsDisplay = document.getElementById('stats-display');
 
   loginModeBtn.classList.remove('active');
   registerModeBtn.classList.remove('active');
@@ -53,9 +54,12 @@ function switchAuthMode(mode) {
     authForm.classList.add('hidden');
     guestForm.classList.remove('hidden');
     guestModeBtn.classList.add('active');
+    // hide stats for guest mode
+    statsDisplay.classList.add('hidden');
   } else {
     authForm.classList.remove('hidden');
     guestForm.classList.add('hidden');
+    // show stats after successful login if user has stats
 
     if (mode === 'login') {
       loginModeBtn.classList.add('active');

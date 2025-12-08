@@ -56,8 +56,9 @@ export function setupGameHUD(player1, player2, myPlayerId) {
   }
 }
 
-export function showGameOver(winnerId, myPlayerId, stats) {
+export function showGameOver(winnerId, myPlayerId, stats, isGuest = false) {
   const resultMessage = document.getElementById('result-message');
+  const updatedStatsCard = document.getElementById('updated-stats');
 
   if (!winnerId) {
     resultMessage.textContent = 'Draw!';
@@ -67,10 +68,16 @@ export function showGameOver(winnerId, myPlayerId, stats) {
     resultMessage.textContent = 'You Lose!';
   }
 
-  // Update final stats
-  document.getElementById('final-wins').textContent = stats.wins;
-  document.getElementById('final-losses').textContent = stats.losses;
-  document.getElementById('final-winstreak').textContent = stats.winStreak;
+  // hide stats for guests, show for registered users
+  if (isGuest) {
+    updatedStatsCard.classList.add('hidden');
+  } else {
+    updatedStatsCard.classList.remove('hidden');
+    // update final stats
+    document.getElementById('final-wins').textContent = stats.wins;
+    document.getElementById('final-losses').textContent = stats.losses;
+    document.getElementById('final-winstreak').textContent = stats.winStreak;
+  }
 }
 
 export function enableInput() {

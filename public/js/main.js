@@ -128,18 +128,14 @@ function setupSocketHandlers() {
     const iWon = data.winnerId === myPlayerId;
     const isDraw = !data.winnerId;
 
-    // Update stats
-    let updatedStats;
+    // Update stats only for registered users
+    let updatedStats = null;
     const user = getCurrentUser();
+    const isGuest = !user || user.isGuest;
 
-    if (user && !user.isGuest) {
+    if (!isGuest) {
       const isWin = isDraw ? false : iWon;
       updatedStats = await updateUserStatsAfterGame(isWin);
-    } else {
-      // update local stats if guest
-      updatedStats = isDraw
-        ? Utils.updateStats(currentUsername, false)
-        : Utils.updateStats(currentUsername, iWon);
     }
 
     // Disable keyboard controls
@@ -150,22 +146,20 @@ function setupSocketHandlers() {
 
     // Show game over screen
     UI.showScreen('gameover-screen');
-    UI.showGameOver(data.winnerId, myPlayerId, updatedStats);
+    UI.showGameOver(data.winnerId, myPlayerId, updatedStats, isGuest);
   });
 
   SocketClient.onPlayerDisconnected(async () => {
     console.log('Opponent disconnected');
 
-    // Treat as win - update stats
-    let updatedStats;
+    // Treat as win - update stats only for registered users
+    let updatedStats = null;
     const user = getCurrentUser();
+    const isGuest = !user || user.isGuest;
 
-    if (user && !user.isGuest) {
+    if (!isGuest) {
       // Authenticated user - update in database
       updatedStats = await updateUserStatsAfterGame(true);
-    } else {
-      // Guest user - update in localStorage
-      updatedStats = Utils.updateStats(currentUsername, true);
     }
 
     window.removeEventListener('keydown', handleKeyPress);
@@ -174,7 +168,7 @@ function setupSocketHandlers() {
     currentState = AppState.GAMEOVER;
     UI.showScreen('gameover-screen');
     document.getElementById('result-message').textContent = 'Opponent Disconnected - You Win!';
-    UI.showGameOver(myPlayerId, myPlayerId, updatedStats);
+    UI.showGameOver(myPlayerId, myPlayerId, updatedStats, isGuest);
   });
 
   SocketClient.onMatchmakingCancelled(() => {
