@@ -127,17 +127,68 @@ async function handleAuthSubmit() {
   }
 }
 
-function handleGuestSubmit() {
-  const username = document.getElementById('guest-username-input').value.trim() || `Guest${Math.floor(Math.random() * 10000)}`;
+async function handleGuestSubmit() {
+  const usernameInput = document.getElementById('guest-username-input').value.trim();
+  const guestSubmitBtn = document.getElementById('guest-submit-btn');
+  const authError = document.getElementById('auth-error');
 
-  currentUser = {
-    userId: null,
-    username,
-    isGuest: true,
-    stats: null,
-  };
+  authError.classList.add('hidden');
 
-  document.dispatchEvent(new CustomEvent('authSuccess', { detail: currentUser }));
+  // If no username provided, generate random username
+  if (!usernameInput) {
+    const username = `Guest${Math.floor(Math.random() * 10000)}`;
+    currentUser = {
+      userId: null,
+      username,
+      isGuest: true,
+      stats: null,
+    };
+    document.dispatchEvent(new CustomEvent('authSuccess', { detail: currentUser }));
+    return;
+  }
+
+  if (usernameInput.length < 1 || usernameInput.length > 20) {
+    showAuthError('Username must be 1-20 characters');
+    return;
+  }
+
+  guestSubmitBtn.disabled = true;
+  guestSubmitBtn.textContent = 'Checking username...';
+
+  try {
+    // Check if username already registered
+    const response = await fetch(`${API_URL}/api/check-username`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: usernameInput }),
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.exists) {
+      showAuthError('Username is already registered. Please choose a different username or login.');
+      guestSubmitBtn.disabled = false;
+      guestSubmitBtn.textContent = 'Find Match as Guest';
+      return;
+    }
+
+    // Username available
+    currentUser = {
+      userId: null,
+      username: usernameInput,
+      isGuest: true,
+      stats: null,
+    };
+
+    document.dispatchEvent(new CustomEvent('authSuccess', { detail: currentUser }));
+  } catch (error) {
+    console.error('Error checking username:', error);
+    showAuthError('Network error. Please try again.');
+    guestSubmitBtn.disabled = false;
+    guestSubmitBtn.textContent = 'Find Match as Guest';
+  }
 }
 
 function showAuthError(message) {

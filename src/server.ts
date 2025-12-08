@@ -90,6 +90,28 @@ app.post('/api/stats/update', async (req, res) => {
   }
 });
 
+app.post('/api/check-username', async (req, res) => {
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ success: false, message: 'Username required' });
+  }
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { username }
+    });
+
+    return res.status(200).json({
+      success: true,
+      exists: !!existingUser
+    });
+  } catch (error) {
+    console.error('Error checking username:', error);
+    return res.status(500).json({ success: false, message: 'Failed to check username' });
+  }
+});
+
 // Socket.io connection handling
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
